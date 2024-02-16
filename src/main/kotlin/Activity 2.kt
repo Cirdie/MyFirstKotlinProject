@@ -1,5 +1,5 @@
 fun main() {
-    println("Enter the number of members:")
+    println("Enter the number of members: ")
     val numOfMembers = readLine()?.toIntOrNull() ?: 0
 
     for (i in 1..numOfMembers) {
