@@ -3,7 +3,7 @@ fun main() {
     val numOfMembers = readLine()?.toIntOrNull()
 
     if (numOfMembers == null || numOfMembers <= 0) {
-        println("Invalid input. Please enter a valid number of group members.")
+        println("Invalid input!! Please enter a valid number of group members!!")
         return
     }
 
@@ -16,18 +16,18 @@ fun main() {
         val age = ageInput?.toIntOrNull()
 
         if (age == null || age <= 0) {
-            println("Invalid age. Please enter a valid age.")
+            println("Invalid age!! Please enter a valid age!!")
             return
         }
 
         val ageGroup = if (age in 1..17) {
-            "underage"
+            "FBI!!OPEN UP!!"
         } else if (age in 18..30) {
-            "young adult"
+            "SUS"
         } else if (age in 31..59) {
-            "adult"
+            "ALL GOODS"
         } else {
-            "senior"
+            "MILF"
         }
 
         println("$name belongs to the $ageGroup group.")
