@@ -21,13 +21,13 @@ fun main() {
         }
 
         val ageGroup = if (age in 1..17) {
-            "FBI!!OPEN UP!!"
+            "Under age"
         } else if (age in 18..30) {
-            "SUS"
+            "Young Adults"
         } else if (age in 31..59) {
-            "ALL GOODS"
+            "Adult"
         } else {
-            "MILF"
+            "Senior"
         }
 
         println("$name belongs to the $ageGroup group.")
