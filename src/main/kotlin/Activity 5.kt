@@ -96,6 +96,9 @@ fun main() {
         if (confirm == "1") {
             println("===== Book Borrowed Successfully =====")
             println("Student Borrower: $firstName $middleName $lastName")
+            println("Course: $course")
+            println("Year Level: $yearLevel")
+            println("Student ID: $studentId")
             println("Book Title: $bookTitle")
             println("Book Author: $bookAuthor")
             currentBookNumber++
@@ -143,6 +146,9 @@ fun main() {
                 if (confirm == "1") {
                     println("===== Book Borrowed Successfully =====")
                     println("Student Borrower: $firstName $middleName $lastName")
+                    println("Course: $course")
+                    println("Year Level: $yearLevel")
+                    println("Student ID: $studentId")
                     println("Book Title: $bookTitle")
                     println("Book Author: $bookAuthor")
                     currentBookNumber++
