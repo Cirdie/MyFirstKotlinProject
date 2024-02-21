@@ -68,45 +68,45 @@ fun main() {
     println("Okay $lastName, Indicate how many books you are going to borrow:")
     numBooks = readLine()?.toIntOrNull() ?: 0
 
-    borrowMore = "Yes"
-    while (borrowMore != "2") {
-        var currentBookNumber = 1
-        for (i in 1..numBooks) {
-            println("==================================================")
-            println("Book To Borrow Left ${numBooks - i + 1}")
-            println("Book Number $currentBookNumber")
-            println("Enter Book Title:")
-            val bookTitle = readLine()!!
+    var currentBookNumber = 1
+    while (currentBookNumber <= numBooks) {
+        println("==================================================")
+        println("Book To Borrow Left ${numBooks - currentBookNumber + 1}")
+        println("Book Number $currentBookNumber")
+        println("Enter Book Title:")
+        val bookTitle = readLine()!!
 
-            println("Enter Book Author:")
-            val bookAuthor = readLine()!!
+        println("Enter Book Author:")
+        val bookAuthor = readLine()!!
 
-            println("Are you sure you want to Borrow this Book?")
+        println("Are you sure you want to Borrow this Book?")
+        println("Book Title: $bookTitle")
+        println("Book Author: $bookAuthor")
+        println("[1] Yes")
+        println("[2] No")
+
+        var confirm: String
+        do {
+            confirm = readLine() ?: ""
+            if (confirm != "1" && confirm != "2") {
+                println("Invalid input. Please enter 1 or 2.")
+            }
+        } while (confirm != "1" && confirm != "2")
+
+        if (confirm == "1") {
+            println("===== Book Borrowed Successfully =====")
+            println("Student Borrower: $firstName $middleName $lastName")
             println("Book Title: $bookTitle")
             println("Book Author: $bookAuthor")
-            println("[1] Yes")
-            println("[2] No")
-
-            var confirm: String
-            do {
-                confirm = readLine() ?: ""
-                if (confirm != "1" && confirm != "2") {
-                    println("Invalid input. Please enter 1 or 2.")
-                }
-            } while (confirm != "1" && confirm != "2")
-
-            if (confirm == "1") {
-                println("===== Book Borrowed Successfully =====")
-                println("Student Borrower: $firstName $middleName $lastName")
-                println("Book Title: $bookTitle")
-                println("Book Author: $bookAuthor")
-                currentBookNumber++
-            } else {
-                println("Book borrowing cancelled for Book Number $currentBookNumber")
-                break
-            }
+            currentBookNumber++
+        } else {
+            println("Book borrowing cancelled for Book Number $currentBookNumber")
+            break
         }
+    }
 
+    borrowMore = "Yes"
+    while (borrowMore != "2") {
         println("Do you want to borrow more books?")
         println("[1] Yes")
         println("[2] No")
@@ -115,6 +115,42 @@ fun main() {
             println("Indicate how many More Books you want to borrow:")
             val moreBooks = readLine()?.toIntOrNull() ?: 0
             numBooks += moreBooks
+            currentBookNumber = 1
+            for (i in 1..moreBooks) {
+                println("==================================================")
+                println("Book To Borrow Left ${moreBooks - i + 1}")
+                println("Book Number $currentBookNumber")
+                println("Enter Book Title:")
+                val bookTitle = readLine()!!
+
+                println("Enter Book Author:")
+                val bookAuthor = readLine()!!
+
+                println("Are you sure you want to Borrow this Book?")
+                println("Book Title: $bookTitle")
+                println("Book Author: $bookAuthor")
+                println("[1] Yes")
+                println("[2] No")
+
+                var confirm: String
+                do {
+                    confirm = readLine() ?: ""
+                    if (confirm != "1" && confirm != "2") {
+                        println("Invalid input. Please enter 1 or 2.")
+                    }
+                } while (confirm != "1" && confirm != "2")
+
+                if (confirm == "1") {
+                    println("===== Book Borrowed Successfully =====")
+                    println("Student Borrower: $firstName $middleName $lastName")
+                    println("Book Title: $bookTitle")
+                    println("Book Author: $bookAuthor")
+                    currentBookNumber++
+                } else {
+                    println("Book borrowing cancelled for Book Number $currentBookNumber")
+                    break
+                }
+            }
         } else if (borrowMore == "2") {
             println("Thank you for using the School Library System.")
         }
