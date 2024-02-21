@@ -1,0 +1,37 @@
+fun main() {
+    println("**Enter student details**\n Enter student name:")
+    val studentName = readLine()!!
+
+    println("Enter student ID:")
+    val studentID = readLine()!!
+
+    println("Enter student course:")
+    val studentCourse = readLine()!!
+
+    println("Enter student year/level:")
+    val studentYear = readLine()!!
+
+    println("Enter the number of books to borrow:")
+    val numberBooks = readLine()!!.toInt()
+
+    repeat(numberBooks) {
+        println("Enter book title:")
+        val bookTitle = readLine()!!
+
+        println("Enter book author:")
+        val bookAuthor = readLine()!!
+
+        println("Enter number of copies available:")
+        val copiesAvailable = readLine()!!.toInt()
+
+        val canBeBorrowed = copiesAvailable > 0
+
+        println("Student: $studentName (ID: $studentID, Course: $studentCourse, Year: $studentYear)")
+        println("Book details - Title: $bookTitle, Author: $bookAuthor")
+        if (canBeBorrowed) {
+            println("This book can be borrowed.")
+        } else {
+            println("Sorry, this book cannot be borrowed as there are no copies available.")
+        }
+    }
+}
