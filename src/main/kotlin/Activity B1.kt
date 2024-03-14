@@ -1,7 +1,26 @@
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 
-data class Book(val title: String, val author: String, val genre: String, val publicationDate: String)
+data class Book(
+        val title: String,
+        val author: String,
+        val genre: String,
+        val publicationDate: LocalDate,
+        var borrower: Borrower? = null,
+        var returnDate: LocalDate? = null // Corrected returnDate property type
+)
+
+data class Borrower(
+        val firstName: String,
+        val middleName: String,
+        val lastName: String,
+        val schoolID: String,
+        val borrowDate: LocalDate,
+        val returnDate: LocalDate
+)
+
+
 
 val booksAvailable = mutableListOf<Book>()
 val booksBorrowed = mutableListOf<Book>()
@@ -38,15 +57,14 @@ fun addBookMenu() {
         when (readLine()?.toIntOrNull()) {
             1 -> addBook()
             2 -> removeBook()
-            3 -> listBooks(booksAvailable, "available")
-            4 -> listBooks(booksBorrowed, "borrowed")
+            3 -> listAvailableBooks()
+            4 -> listBorrowedBooks()
             5 -> updateBook()
             6 -> return
             else -> println("Invalid input. Please enter a number from 1 to 6.")
         }
     }
 }
-
 fun addBook() {
     println("\nPlease provide the following information for adding a new book:")
     print("Title: ")
@@ -55,14 +73,20 @@ fun addBook() {
     val author = readLine() ?: ""
     print("Genre: ")
     val genre = readLine() ?: ""
-    var publicationDate: String
+
+    val formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy")
+    var publicationDate: LocalDate? = null
+
     do {
-        print("Publication Date (yyyy-MM-dd): ")
-        publicationDate = readLine() ?: ""
-        if (!publicationDate.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
-            println("Error: Please enter the publication date in the format yyyy-MM-dd.")
+        print("Publication Date (MM-dd-yyyy): ")
+        val publicationDateStr = readLine() ?: ""
+        try {
+            publicationDate = LocalDate.parse(publicationDateStr, formatter)
+
+        } catch (e: DateTimeParseException) {
+            println("Error: Please enter the publication date in the format MM-dd-yyyy.")
         }
-    } while (!publicationDate.matches(Regex("\\d{4}-\\d{2}-\\d{2}")))
+    } while (publicationDate == null)
 
     val newBook = Book(title, author, genre, publicationDate)
     val existingBook = booksAvailable.find { it.title == newBook.title }
@@ -70,7 +94,11 @@ fun addBook() {
         println("Error: The book already exists in the library.")
     } else {
         println("\nAre you sure you want to add this Book?")
-        displayBookInformation(newBook)
+        println("%-4s| %-30s| %-20s| %-20s| %-15s".format("No", "Book Title", "Author", "Genre", "Publication Date"))
+        println("-".repeat(100))
+
+        println("%-4d| %-30s| %-20s| %-20s| %-15s".format(1, title, author, genre, publicationDate))
+
         print("\n[1] Yes\n[2] No\n\nEnter your choice: ")
         when (readLine()?.toIntOrNull()) {
             1 -> {
@@ -83,6 +111,8 @@ fun addBook() {
     }
 }
 
+
+
 fun removeBook() {
     println("\nRemove Book from Library:")
     if (booksAvailable.isEmpty()) {
@@ -94,7 +124,6 @@ fun removeBook() {
     val book = booksAvailable.find { it.title.equals(title, ignoreCase = true) }
     if (book != null) {
         println("\nAre you sure you want to delete this Book?")
-        displayBookInformation(book)
         print("\n[1] Yes\n[2] No\n\nEnter your choice: ")
         when (readLine()?.toIntOrNull()) {
             1 -> {
@@ -109,52 +138,113 @@ fun removeBook() {
     }
 }
 
-fun listBooks(books: List<Book>, type: String) {
-    println("\nHere are the books $type in the library:\n")
-    if (books.isEmpty()) {
-        println("No books $type in the library.")
-    } else {
-        books.forEachIndexed { index, book ->
-            println("${index + 1}. ${book.title} by ${book.author}")
+fun listAvailableBooks() {
+    if (booksAvailable.isEmpty()) {
+        println("No books available in the library.")
+        return
+    }
+
+    println("\nAvailable Books:")
+    println("%-4s| %-30s| %-20s| %-20s| %-15s".format("No", "Book Title", "Author", "Genre", "Publication Date"))
+    println("-".repeat(100))
+
+    booksAvailable.forEachIndexed { index, book ->
+        val title = book.title
+        val author = book.author
+        val genre = book.genre
+        val pubDate = book.publicationDate
+
+        println("%-4d| %-30s| %-20s| %-20s| %-15s".format(index + 1, title, author, genre, pubDate))
+    }
+}fun listBorrowedBooks() {
+    if (booksBorrowed.isEmpty()) {
+        println("No books borrowed from the library.")
+        return
+    }
+
+    println("\nBorrowed Books:")
+    println("%-4s| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
+            "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "School ID", "Return Date"
+    ))
+    println("-".repeat(150))
+
+    booksBorrowed.forEachIndexed { index, book ->
+        val title = book.title
+        val author = book.author
+        val genre = book.genre
+        val pubDate = book.publicationDate
+        val borrowerInfo = if (book.borrower != null) {
+            val borrower = book.borrower
+            "${borrower?.firstName} ${borrower?.middleName?.take(1)}. ${borrower?.lastName}"
+        } else {
+            "Unknown"
         }
+        val schoolID = book.borrower?.schoolID ?: "Unknown"
+        val returnDate = book.returnDate ?: "Unknown"
+
+        println("%-4d| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
+                index + 1, title, author, genre, pubDate, borrowerInfo, schoolID,returnDate
+        ))
     }
 }
 
-fun updateBook() {
-    println("\nUpdate Book Information:")
-    print("Enter the title of the book you want to update: ")
-    val title = readLine() ?: ""
-    val book = booksAvailable.find { it.title.equals(title, ignoreCase = true) }
-    if (book != null) {
-        println("\nSelected Book:")
-        displayBookInformation(book)
-        println("\nPlease provide the updated information for the book:")
-        print("New Title (Press Enter to keep existing title): ")
-        val newTitle = readLine()?.takeIf { it.isNotBlank() } ?: book.title
-        print("New Author (Press Enter to keep existing author): ")
-        val newAuthor = readLine()?.takeIf { it.isNotBlank() } ?: book.author
-        print("New Genre (Press Enter to keep existing genre): ")
-        val newGenre = readLine()?.takeIf { it.isNotBlank() } ?: book.genre
-        var newPublicationDate = book.publicationDate
-        var validDate = false
-        do {
-            print("New Publication Date (yyyy-MM-dd, Press Enter to keep existing date): ")
-            newPublicationDate = readLine() ?: book.publicationDate
-            if (newPublicationDate.matches(Regex("\\d{4}-\\d{2}-\\d{2}"))) {
-                validDate = true
-            } else {
-                println("Error: Please enter the publication date in the format yyyy-MM-dd.")
-            }
-        } while (!validDate)
 
-        val updatedBook = Book(newTitle, newAuthor, newGenre, newPublicationDate)
-        booksAvailable.remove(book)
-        booksAvailable.add(updatedBook)
-        println("\nBook information updated successfully:")
-        displayBookInformation(updatedBook)
-    } else {
-        println("Book not found.")
+
+
+
+fun updateBook() {
+    println("\nPlease provide the following information to update a book:")
+    print("Enter the title of the book you want to update: ")
+    val titleToUpdate = readLine() ?: ""
+
+    val bookToUpdate = booksAvailable.find { it.title.equals(titleToUpdate, ignoreCase = true) }
+    if (bookToUpdate == null) {
+        println("Error: The book with the title '$titleToUpdate' does not exist in the library.")
+        return
     }
+
+    println("\nCurrent Book Information:")
+    println("%-4s| %-30s| %-20s| %-20s| %-15s".format("No", "Book Title", "Author", "Genre", "Publication Date"))
+    println("-".repeat(100))
+
+    booksAvailable.forEachIndexed { index, book ->
+        val title = book.title
+        val author = book.author
+        val genre = book.genre
+        val pubDate = book.publicationDate
+
+        println("%-4d| %-30s| %-20s| %-20s| %-15s".format(index + 1, title, author, genre, pubDate))
+    }
+    println("\nPlease provide the updated information for the book:")
+    print("New Title (Press Enter to keep existing title): ")
+    val newTitle = readLine()?.takeUnless { it.isBlank() } ?: bookToUpdate.title
+    print("New Author (Press Enter to keep existing author): ")
+    val newAuthor = readLine()?.takeUnless { it.isBlank() } ?: bookToUpdate.author
+    print("New Genre (Press Enter to keep existing genre): ")
+    val newGenre = readLine()?.takeUnless { it.isBlank() } ?: bookToUpdate.genre
+
+    val formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy")
+    var newPublicationDate: LocalDate? = null
+
+    do {
+        print("New Publication Date (MM-dd-yyyy, Press Enter to keep existing publication date): ")
+        val newPublicationDateStr = readLine()
+        if (newPublicationDateStr.isNullOrBlank()) {
+            newPublicationDate = bookToUpdate.publicationDate // Keep existing publication date
+            break
+        }
+        try {
+            newPublicationDate = LocalDate.parse(newPublicationDateStr, formatter)
+        } catch (e: DateTimeParseException) {
+            println("Error: Please enter the publication date in the format MM-dd-yyyy.")
+        }
+    } while (newPublicationDate == null)
+
+    val updatedBook = Book(newTitle, newAuthor, newGenre, newPublicationDate ?: bookToUpdate.publicationDate)
+    booksAvailable.remove(bookToUpdate)
+    booksAvailable.add(updatedBook)
+
+    println("Book updated successfully.")
 }
 
 fun borrowBookMenu() {
@@ -169,8 +259,8 @@ fun borrowBookMenu() {
         print("Enter your choice: ")
         when (readLine()?.toIntOrNull()) {
             1 -> searchBook()
-            2 -> listBooks(booksAvailable, "available")
-            3 -> listBooks(booksBorrowed, "borrowed")
+            2 -> listAvailableBooks()
+            3 -> listBorrowedBooks()
             4 -> borrowBook()
             5 -> return
             else -> println("Invalid input. Please enter a number from 1 to 5.")
@@ -224,24 +314,27 @@ fun searchBook() {
         else -> println("Invalid input. Please enter a number from 1 to 4.")
     }
 }
-
 fun displayMatchingBooks(matchingBooks: List<Book>) {
-    println("\nMatching Books:")
-    matchingBooks.forEachIndexed { index, book ->
-        println("${index + 1}. ${book.title} by ${book.author}")
+    if (matchingBooks.isEmpty()) {
+        println("No matching books found.")
+        return
     }
-    print("\nSelect the book to borrow (Enter the corresponding number): ")
-    val choice = readLine()?.toIntOrNull() ?: return
-    if (choice in 1..matchingBooks.size) {
-        val selectedBook = matchingBooks[choice - 1]
-        println("Book Information")
-        displayBookInformation(selectedBook)
-        borrowConfirmation(selectedBook)
-    } else {
-        println("Invalid choice.")
+
+    println("\nMatching Books:")
+    println("%-4s| %-30s| %-20s| %-20s| %-15s".format(
+            "No", "Book Title", "Author", "Genre", "Publication Date"
+    ))
+    println("-".repeat(100))
+
+    matchingBooks.forEachIndexed { index, book ->
+        val title = book.title
+        val author = book.author
+        val genre = book.genre
+        val pubDate = book.publicationDate
+
+        println("%-4d| %-30s| %-20s| %-20s| %-15s".format(index + 1, title, author, genre, pubDate))
     }
 }
-
 
 fun borrowBook() {
     println("\nBorrow Book:")
@@ -250,62 +343,81 @@ fun borrowBook() {
     val book = booksAvailable.find { it.title.equals(title, ignoreCase = true) }
     if (book != null) {
         println("\nMatching Books:")
-        displayBookInformation(book)
+        val author = book.author
+        val genre = book.genre
+        val pubDate = book.publicationDate
+
+        println("%-4s| %-30s| %-20s| %-20s| %-15s".format(
+                "No", "Book Title", "Author", "Genre", "Publication Date"
+        ))
+        println("-".repeat(100))
+        println("%-4d| %-30s| %-20s| %-20s| %-15s".format(1, title, author, genre, pubDate))
+
         println("\nDo you want to borrow this book?")
         println("[1] Yes")
         println("[2] No")
         print("Enter your choice: ")
+
         when (readLine()?.toIntOrNull()) {
-            1 -> borrowConfirmation(book)
+            1 -> {
+                println("\nPlease enter your information:")
+                print("First Name: ")
+                val firstName = readLine() ?: ""
+                print("Middle Name: ")
+                val middleName = readLine() ?: ""
+                print("Last Name: ")
+                val lastName = readLine() ?: ""
+                print("School ID: ")
+                val schoolId = readLine() ?: ""
+                print("Number of days to borrow: ")
+                val daysToBorrow = readLine()?.toIntOrNull() ?: 0
+
+                val borrowDate = LocalDate.now()
+                val returnDate = borrowDate.plusDays(daysToBorrow.toLong())
+                val borrower = Borrower(firstName, middleName, lastName, schoolId, borrowDate, returnDate)
+
+                val borrowedBook = Book(book.title, book.author, book.genre, book.publicationDate, borrower, returnDate)
+
+                println("\nBorrower Information:")
+                println("Name: $firstName $middleName $lastName")
+                println("School ID: $schoolId")
+                println("\nSelected Book:")
+                println("%-4s| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
+                        "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "School ID", "Return Date"
+                ))
+                println("-".repeat(150))
+
+                val borrowerInfo = if (borrowedBook.borrower != null) {
+                    "${borrowedBook.borrower?.firstName} ${borrowedBook.borrower?.middleName?.take(1)}. ${borrowedBook.borrower?.lastName}"
+                } else {
+                    "Unknown"
+                }
+                val schoolID = borrowedBook.borrower?.schoolID ?: "Unknown"
+                val returnDateStr = borrowedBook.returnDate ?: "Unknown"
+
+                println("%-4d| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
+                        1, borrowedBook.title, borrowedBook.author, borrowedBook.genre, borrowedBook.publicationDate, borrowerInfo, schoolID, returnDateStr
+                ))
+
+                println("\nDo you want to borrow this book?")
+                println("[1] Yes")
+                println("[2] No")
+                print("Enter your choice: ")
+
+                when (readLine()?.toIntOrNull()) {
+                    1 -> {
+                        booksAvailable.remove(book)
+                        booksBorrowed.add(borrowedBook)
+                        println("Book borrowed successfully.")
+                    }
+                    2 -> println("Borrowing canceled.")
+                    else -> println("Invalid input. Borrowing canceled.")
+                }
+            }
             2 -> println("Borrowing canceled.")
             else -> println("Invalid input. Borrowing canceled.")
         }
     } else {
         println("Book not found.")
-    }
-}
-
-fun borrowConfirmation(book: Book) {
-    println("\nDo you want to borrow this book?")
-    println("[1] Yes")
-    println("[2] No")
-    print("Enter your choice: ")
-    when (readLine()?.toIntOrNull()) {
-        1 -> {
-            println("\nPlease enter your information:")
-            print("First Name: ")
-            val firstName = readLine() ?: ""
-            print("Middle Name: ")
-            val middleName = readLine() ?: ""
-            print("Last Name: ")
-            val lastName = readLine() ?: ""
-            print("School ID: ")
-            val schoolId = readLine() ?: ""
-            print("Number of days to borrow: ")
-            val daysToBorrow = readLine()?.toIntOrNull() ?: 0
-
-            val borrowedBook = Book(book.title, book.author, book.genre, book.publicationDate)
-            booksAvailable.remove(book)
-            booksBorrowed.add(borrowedBook)
-            val returnDate = LocalDate.now().plusDays(daysToBorrow.toLong())
-            println("\nBorrower Information:")
-            println("Name: $firstName $middleName $lastName")
-            println("School ID: $schoolId")
-            println("\nSelected Book:")
-            displayBookInformation(borrowedBook)
-            println("Date to Return: $returnDate")
-            println("\nBorrowing successful! You have borrowed ${book.title} by ${book.author} for $daysToBorrow days.")
-        }
-        2 -> println("Borrowing canceled.")
-        else -> println("Invalid input. Borrowing canceled.")
-    }
-}
-
-fun displayBookInformation(book: Book) {
-    with(book) {
-        println("Title: $title")
-        println("Author: $author")
-        println("Genre: $genre")
-        println("Publication Date: $publicationDate")
     }
 }
