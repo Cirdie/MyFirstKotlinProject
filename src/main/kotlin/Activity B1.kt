@@ -5,22 +5,22 @@ import java.time.format.DateTimeParseException
 
 
 data class Book(
-    val title: String,
-    val author: String,
-    val genre: String,
-    val publicationDate: LocalDate,
-    var borrower: Borrower? = null,
-    var returnDate: LocalDate? = null
+        val title: String,
+        val author: String,
+        val genre: String,
+        val publicationDate: LocalDate,
+        var borrower: Borrower? = null,
+        var returnDate: LocalDate? = null
 )
 
 data class Borrower(
-    val firstName: String,
-    val middleName: String,
-    val lastName: String,
-    val course: String,
-    val schoolID: String,
-    val borrowDate: LocalDate,
-    val returnDate: LocalDate
+        val firstName: String,
+        val middleName: String,
+        val lastName: String,
+        val course: String,
+        val schoolID: String,
+        val borrowDate: LocalDate,
+        val returnDate: LocalDate
 )
 
 
@@ -30,6 +30,7 @@ val booksBorrowed = mutableListOf<Book>()
 
 fun main() {
     logInfo("Starting the Library System")
+    Thread.sleep(3000)
 
     println("=".repeat(10) + " WELCOME TO LIBRARY SYSTEM " + "=".repeat(10))
 
@@ -37,8 +38,7 @@ fun main() {
         println("\nSelect a number to choose an option")
         println("[1] Add a book")
         println("[2] Borrow a book")
-        println("[3] Return a book")
-        println("[4] Exit\n")
+        println("[3] Exit\n")
         print("Please enter a number your choice: ")
 
         when (readLine()?.toIntOrNull()) {
@@ -51,10 +51,6 @@ fun main() {
                 borrowBookMenu()
             }
             3 -> {
-                logInfo("User selected option: Return a Book")
-                returnBook()
-            }
-            4 -> {
                 logInfo("User selected option: Exit")
                 println("Exiting the Library System. Goodbye!")
                 return
@@ -66,6 +62,7 @@ fun main() {
         }
     }
 }
+
 
 fun addBookMenu() {
     logInfo("Entering Add Book Menu")
@@ -104,9 +101,9 @@ fun addBookMenu() {
                 updateBook()
             }
             6 -> {
-            logInfo("User selected option: Exit Add Book Menu")
-            return
-        }
+                logInfo("User selected option: Exit Add Book Menu")
+                return
+            }
             else -> {
                 logError("Invalid input. Please enter a number from 1 to 6.")
                 println("Invalid input. Please enter a number from 1 to 6.")
@@ -114,6 +111,61 @@ fun addBookMenu() {
         }
     }
 }
+
+
+
+fun borrowBookMenu() {
+    logger.info("Entering borrow book menu.")
+
+    println("")
+    println("=".repeat(47))
+    Thread.sleep(2000)
+
+    while (true) {
+        println("\n[BORROW A BOOK MENU]\n")
+        println("[1] Search a Book")
+        println("[2] List Available")
+        println("[3] List Borrowed Book")
+        println("[4] Borrow a Book")
+        println("[5] Return a Book")
+        println("[6] Exit Borrowing Menu\n")
+        print("Enter your choice: ")
+        when (readLine()?.toIntOrNull()) {
+            1 -> {
+                logInfo("User selected option: Add Book to Library")
+                searchBook()
+            }
+            2 -> {
+                logInfo("User selected option: Search Book ")
+                listAvailableBooks()
+            }
+            3 -> {
+                logInfo("User selected option: List Books Available")
+                listBorrowedBooks()
+            }
+            4 -> {
+                logInfo("User selected option: Borrow a Book")
+                borrowBook()
+            }
+            5 -> {
+                logInfo("User selected option: Return a Book")
+                returnBook()
+            }
+            6 -> {
+                logInfo("User selected option: Exit Borrowing Menu")
+                return
+            }
+            else -> {
+                logError("Invalid input. Please enter a number from 1 to 6.")
+                println("Invalid input. Please enter a number from 1 to 6.")
+            }
+        }
+    }
+}
+
+
+
+
 fun addBook() {
     logger.info("Adding a book to the library.")
 
@@ -264,7 +316,7 @@ fun listBorrowedBooks() {
 
     println("\nBorrowed Books:")
     println("%-4s| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
-        "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "Course", "School ID", "Return Date"
+            "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "Course", "School ID", "Return Date"
     ))
     println("-".repeat(150))
 
@@ -280,14 +332,12 @@ fun listBorrowedBooks() {
         val returnDate = book.returnDate ?: "Unknown"
 
         println("%-4d| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
-            index + 1, book.title, book.author, book.genre, book.publicationDate, borrowerInfo, course, schoolID, returnDate
+                index + 1, book.title, book.author, book.genre, book.publicationDate, borrowerInfo, course, schoolID, returnDate
         ))
     }
     logger.info("Listed borrowed books successfully.")
 }
 
-
-// This function allows the user to update the information of a book in the library.
 fun updateBook() {
     logger.info("Updating books in the library.")
 
@@ -352,44 +402,12 @@ fun updateBook() {
 }
 
 
-fun borrowBookMenu() {
-    logger.info("Entering borrow book menu.")
-
-    println("")
-    println("=".repeat(47))
-    Thread.sleep(3000)
-
-    while (true) {
-        println("\n[BORROW A BOOK MENU]\n")
-        println("[1] Search Book")
-        println("[2] List Available")
-        println("[3] List Borrowed Book")
-        println("[4] Borrow Book")
-        println("[5] Exit Borrowing Menu\n")
-        print("Enter your choice: ")
-        when (readLine()?.toIntOrNull()) {
-            1 -> searchBook()
-            2 -> listAvailableBooks()
-            3 -> listBorrowedBooks()
-            4 -> borrowBook()
-            5 -> {
-                logger.info("Exiting borrow book menu.")
-                return
-            }
-            else -> {
-                println("Invalid input. Please enter a number from 1 to 5.")
-                logger.warning("Invalid input provided in borrow book menu.")
-            }
-        }
-    }
-}
 
 fun searchBook() {
     logger.info("Entering search book function.")
 
     println("")
     println("=".repeat(47))
-    Thread.sleep(2000)
 
     println("\n[SEARCH A BOOK]")
     println("Please select how you would like to search for a book")
@@ -401,7 +419,7 @@ fun searchBook() {
     when (readLine()?.toIntOrNull()) {
         1 -> {
             logger.info("Searching book by title.")
-            println("\nSearch by Title:")
+            println("\n[Search by Title]\n")
             print("Enter the title of the book: ")
             val title = readLine() ?: ""
             val matchingBooks = booksAvailable.filter { it.title.equals(title, ignoreCase = true) }
@@ -414,7 +432,7 @@ fun searchBook() {
         }
         2 -> {
             logger.info("Searching book by author.")
-            println("\nSearch by Author:")
+            println("\n[Search by Author]\n")
             print("Enter the author's name: ")
             val author = readLine() ?: ""
             val matchingBooks = booksAvailable.filter { it.author.equals(author, ignoreCase = true) }
@@ -427,7 +445,7 @@ fun searchBook() {
         }
         3 -> {
             logger.info("Searching book by genre.")
-            println("\nSearch by Genre:")
+            println("\n[Search by Genre]\n")
             print("Enter the genre: ")
             val genre = readLine() ?: ""
             val matchingBooks = booksAvailable.filter { it.genre.equals(genre, ignoreCase = true) }
@@ -461,7 +479,7 @@ fun displayMatchingBooks(matchingBooks: List<Book>) {
     // Printing the header for the list of matching books.
     println("\nMatching Books:")
     println("%-4s| %-30s| %-20s| %-20s| %-15s".format(
-        "No", "Book Title", "Author", "Genre", "Publication Date"
+            "No", "Book Title", "Author", "Genre", "Publication Date"
     ))
     println("-".repeat(100))
 
@@ -476,7 +494,6 @@ fun displayMatchingBooks(matchingBooks: List<Book>) {
     }
 }
 
-// This function facilitates the borrowing process for a book.
 fun borrowBook() {
     logInfo("Entering borrowBook function.")
 
@@ -494,11 +511,11 @@ fun borrowBook() {
         val genre = book.genre
         val pubDate = book.publicationDate
 
-        println("%-4s| %-30s| %-20s| %-20s| %-15s".format(
-            "No", "Book Title", "Author", "Genre", "Publication Date"
+        println("%-4s| %-30s| %-20s| %-20s| %-20s".format(
+                "No", "Book Title", "Author", "Genre", "Publication Date"
         ))
-        println("-".repeat(100))
-        println("%-4d| %-30s| %-20s| %-20s| %-15s".format(1, title, author, genre, pubDate))
+        println("-".repeat(150))
+        println("%-4d| %-30s| %-20s| %-20s| %-20s".format(1, title, author, genre, pubDate))
 
         println("\nDo you want to borrow this book?\n") // Confirming if the user wants to borrow the book.
         println("[1] Yes")
@@ -536,7 +553,7 @@ fun borrowBook() {
 
                 println("\nSelected Book\n")
                 println("%-4s| %-30s| %-20s| %-20s| %-20s| %-20s|%-20s| %-20s| %-20s".format(
-                    "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "Course", "School ID", "Return Date"
+                        "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "Course", "School ID", "Return Date"
                 ))
                 println("-".repeat(158))
 
@@ -549,7 +566,7 @@ fun borrowBook() {
                 val returnDateStr = borrowedBook.returnDate ?: "Unknown"
 
                 println("%-4d| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
-                    1, borrowedBook.title, borrowedBook.author, borrowedBook.genre, borrowedBook.publicationDate, borrowerInfo, course, schoolID, returnDateStr
+                        1, borrowedBook.title, borrowedBook.author, borrowedBook.genre, borrowedBook.publicationDate, borrowerInfo, course, schoolID, returnDateStr
                 ))
 
                 println("\nIs the Information Correct?\n") // Confirming again if the user wants to borrow the book.
@@ -575,8 +592,8 @@ fun borrowBook() {
         logError("Book not found in the library: $title")
     }
 
-    logInfo("Exiting borrowBook function.")
 }
+
 fun returnBook() {
     println("")
     println("=".repeat(47))
@@ -596,17 +613,17 @@ fun returnBook() {
 
     if (borrowedBook != null) {
         println("%-4s| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
-            "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "Return Date"
+                "No", "Book Title", "Author", "Genre", "Publication Date", "Borrower", "Return Date"
         ))
         println("-".repeat(150))
 
         println("%-4d| %-30s| %-20s| %-20s| %-20s| %-20s| %-20s".format(
-            1, borrowedBook.title, borrowedBook.author, borrowedBook.genre,
-            borrowedBook.publicationDate,
-            borrowedBook.borrower?.let { borrower ->
-                "${borrower.firstName} ${borrower.middleName.take(1)}. ${borrower.lastName}"
-            } ?: "Unknown",
-            borrowedBook.returnDate
+                1, borrowedBook.title, borrowedBook.author, borrowedBook.genre,
+                borrowedBook.publicationDate,
+                borrowedBook.borrower?.let { borrower ->
+                    "${borrower.firstName} ${borrower.middleName.take(1)}. ${borrower.lastName}"
+                } ?: "Unknown",
+                borrowedBook.returnDate
         ))
 
         println("\nDo you want to return this book?")
