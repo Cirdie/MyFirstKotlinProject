@@ -48,6 +48,7 @@ fun main() {
 
 fun addProductToInventory() {
     logger.info("User selected: Add Product to Inventory")
+    Thread.sleep(2000)
     println("=".repeat(10) + " ADD PRODUCT TO INVENTORY " + "=".repeat(10))
     print("\nProduct Name: ")
     val name = readLine() ?: ""
@@ -74,6 +75,7 @@ fun addProductToInventory() {
             4 -> "Groceries"
             else -> {
                 logger.warning("Invalid category selected.")
+                Thread.sleep(1000)
                 println("Invalid category. Please choose a valid category.")
                 continue
             }
@@ -87,6 +89,7 @@ fun addProductToInventory() {
         DecimalFormat("#,##0.00").parse(priceString).toDouble()
     } catch (e: Exception) {
         logger.warning("Invalid price format entered.")
+        Thread.sleep(1000)
         println("Invalid price format. Please enter a valid price.")
         return
     }
@@ -99,6 +102,7 @@ fun addProductToInventory() {
     inventory.add(newProduct)
 
     logger.info("Product added to inventory successfully.")
+    Thread.sleep(1000)
     println("\nProduct added to inventory successfully.\n")
     println("%-8s| %-30s| %-30s| %-15s| %-5s| %-12s| %-15s".format(
         "Code", "Product Name", "Categories", "Price", "Qty", "Sales Count", "Total Cost"
@@ -111,18 +115,21 @@ fun addProductToInventory() {
 }
     fun updateProductSales() {
         logger.info("Updating Product Sales")
+        Thread.sleep(2000)
         println("=".repeat(10) + " UPDATE PRODUCT SALES " + "=".repeat(10))
         print("\nPlease enter the product name or code: ")
         val input = readLine() ?: ""
         val product = inventory.find { it.name.equals(input, ignoreCase = true) || it.code.toString() == input }
         if (product == null) {
             logger.warning("Product not found.")
+            Thread.sleep(1000)
             println("Product not found.")
             return
         }
 
         // Display current product information
         logger.info("Displaying Current Product Information")
+        Thread.sleep(1000)
         println("\nProduct Information:")
         println("%-8s| %-30s| %-30s| %-15s| %-8s| %-12s| %-15s".format(
             "Code", "Product Name", "Categories", "Price", "Quantity", "Sales Count", "Total Cost"
@@ -135,12 +142,14 @@ fun addProductToInventory() {
 
         // Enter new sales count
         logger.info("Prompting for New Sales Count")
+        Thread.sleep(1000)
         println("\nEnter the new sales count for the product:")
         val newSalesCount = readLine()?.toIntOrNull() ?: return
 
         // Check if new sales count exceeds available quantity
         if (newSalesCount > product.quantity) {
             logger.warning("Sales count exceeds available quantity.")
+            Thread.sleep(1000)
             println("Sales count cannot exceed available quantity (${product.quantity}).")
             return
         }
@@ -155,12 +164,14 @@ fun addProductToInventory() {
 
         // Display success message and updated product information
         logger.info("Success: Product sales count updated.")
+        Thread.sleep(1000)
         println("\n[Success] The sales count for ${product.name} has been updated to $newSalesCount.")
         println("New Total Cost for ${product.name}: ₱${"%.2f".format(product.totalCost)}")
         println("New Quantity for ${product.name}: ${product.quantity}")
 
         // Display updated product information
         logger.info("Displaying Updated Product Information")
+        Thread.sleep(1000)
         println("\nUpdated Product Information:")
         println("%-8s| %-30s| %-30s| %-15s| %-8s| %-12s| %-15s".format(
             "Code", "Product Name", "Categories", "Price", "Qty", "Sales Count", "Total Cost"
@@ -174,6 +185,7 @@ fun addProductToInventory() {
 
     fun updateProductInformation() {
         logger.info("Updating Product Information")
+        Thread.sleep(2000)
         println("=".repeat(10) + " UPDATE PRODUCT INFORMATION " + "=".repeat(10))
         print("\nPlease enter the product name or code: ")
         val input = readLine() ?: ""
@@ -181,22 +193,26 @@ fun addProductToInventory() {
         val product = inventory.find { it.name.equals(input, ignoreCase = true) || it.code.toString() == input }
         if (product == null) {
             logger.warning("Product not found.")
+            Thread.sleep(1000)
             println("Product not found.")
             return
         }
 
         while (true) {
             logger.info("Prompting for New Product Name")
+            Thread.sleep(1000)
             print("\nEnter the new product name: ")
             val newName = readLine()?.trim() ?: ""
             if (newName.isBlank()) {
                 logger.warning("New product name is empty.")
+                Thread.sleep(1000)
                 println("Product name cannot be empty.")
                 continue
             }
 
             if (inventory.any { it.name.equals(newName, ignoreCase = true) }) {
                 logger.warning("Product with the same name already exists.")
+                Thread.sleep(1000)
                 println("A product with the same name already exists. Please enter a unique name.")
                 continue
             }
@@ -227,10 +243,12 @@ fun addProductToInventory() {
         when (choice) {
             1 -> {
                 logger.info("Updating Product Name")
+                Thread.sleep(1000)
                 print("\nEnter the new product name: ")
                 val newName = readLine()?.trim() ?: ""
                 if (newName.isBlank()) {
                     logger.warning("New product name is empty.")
+                    Thread.sleep(1000)
                     println("Product name cannot be empty.")
                 }
                 if (inventory.any { it.name.equals(newName, ignoreCase = true) }) {
@@ -243,10 +261,12 @@ fun addProductToInventory() {
             }
             2 -> {
                 logger.info("Updating Product Price")
+                Thread.sleep(1000)
                 print("Enter the new product price: ")
                 val newPrice = readLine()?.toDoubleOrNull() ?: return
                 if (newPrice < 0.0) {
                     logger.warning("New product price is negative.")
+                    Thread.sleep(1000)
                     println("Product Price cannot be negative.")
                 }
                 product.price = newPrice
@@ -254,10 +274,12 @@ fun addProductToInventory() {
             }
             3 -> {
                 logger.info("Updating Product Quantity")
+                Thread.sleep(1000)
                 print("Enter the new product quantity: ")
                 val newQuantity = readLine()?.toIntOrNull() ?: return
                 if (newQuantity < 0) {
                     logger.warning("New product quantity is negative.")
+                    Thread.sleep(1000)
                     println("Product Quantity cannot be negative.")
                 }
                 product.quantity = newQuantity
@@ -265,6 +287,7 @@ fun addProductToInventory() {
             }
             4 -> {
                 logger.info("Updating Product Category")
+                Thread.sleep(1000)
                 // Update product category
                 print("Enter the new product category: ")
                 val newCategory = readLine() ?: return
@@ -283,6 +306,7 @@ fun addProductToInventory() {
                         4 -> "Groceries"
                         else -> {
                             logger.warning("Invalid category choice.")
+                            Thread.sleep(1000)
                             println("Invalid Number. Please choose a valid number.")
                             continue
                         }
@@ -322,6 +346,7 @@ fun addProductToInventory() {
 
     fun viewInventory() {
         logger.info("Viewing Inventory")
+        Thread.sleep(2000)
         println("\nInventory List:\n")
         println("%-8s| %-30s| %-30s| %-15s| %-5s| %-12s| %-15s".format(
             "Code", "Product Name", "Categories", "Price", "Qty", "Sales Count", "Total Cost"
@@ -338,6 +363,7 @@ fun addProductToInventory() {
 
     fun searchProduct() {
         logger.info("Searching for a Product")
+        Thread.sleep(2000)
         println("\n[SEARCH A PRODUCT]")
         println("Please select how you would like to search for a product")
         println("[1] Search by Name")
@@ -348,6 +374,7 @@ fun addProductToInventory() {
         when (readLine()?.toIntOrNull()) {
             1 -> {
                 logger.info("Searching by Name")
+                Thread.sleep(1000)
                 println("\n[Search by Name]\n")
                 print("Enter the name of the product: ")
                 val productName = readLine() ?: ""
@@ -356,6 +383,7 @@ fun addProductToInventory() {
             }
             2 -> {
                 logger.info("Searching by Category")
+                Thread.sleep(1000)
                 println("\n[Search by Category]\n")
                 print("Enter the category: ")
                 val productCategory = readLine() ?: ""
@@ -364,6 +392,7 @@ fun addProductToInventory() {
             }
             3 -> {
                 logger.info("Searching by Code")
+                Thread.sleep(1000)
                 println("\n[Search by Code]\n")
                 print("Enter the code of the product: ")
                 val productCode = readLine()?.toIntOrNull() ?: 0
@@ -376,11 +405,13 @@ fun addProductToInventory() {
             }
             4 -> {
                 logger.info("Exiting search product function.")
+                Thread.sleep(1000)
                 println("Exiting search product function.")
                 return
             }
             else -> {
                 logger.warning("Invalid input. Please enter a number from 1 to 4.")
+                Thread.sleep(1000)
                 println("Invalid input. Please enter a number from 1 to 4.")
             }
         }
