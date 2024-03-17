@@ -38,6 +38,8 @@ fun main() {
             5 -> searchProduct()
             6 -> generateSalesReport()
             7 -> {
+                 logger.info("User selected option: Exit ")
+                Thread.sleep(1000)
                 println("Exiting the Grocery Management System. Goodbye!")
                 return
             }
