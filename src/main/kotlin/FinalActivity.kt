@@ -1,7 +1,16 @@
 import java.util.Scanner
+import java.util.logging.Logger
+
+val logger = Logger.getLogger("CookbookCompanionLogger")
+
+fun log(message: String) {
+    logger.info(message)
+}
 
 fun mainMenu() {
-    println("""
+    logger.info("Main menu displayed.")
+    println(
+        """
     ─────────────────────────────────────────────────────────────────
         Welcome to Cookbook Companion: Your Recipe Manager           
     ─────────────────────────────────────────────────────────────────
@@ -13,57 +22,83 @@ fun mainMenu() {
       [6] » Exit                                                                          
     ─────────────────────────────────────────────────────────────────
     Enter the number corresponding to your choice: 
-    """)
+    """
+    )
     val choice = readLine()!!.toIntOrNull()
     when (choice) {
-        1 -> addRecipe()
-        2 -> updateRecipe()
-        3 -> removeRecipe()
-        4 -> viewRecipe()
-        5 -> searchRecipe()
-        6 -> System.exit(0)
-        else -> println("Invalid choice. Please enter a number between 1 and 6.")
+        1 -> {
+            logger.info("User chose to create a new recipe.")
+            addRecipe()
+        }
+
+        2 -> {
+            logger.info("User chose to update an existing recipe.")
+            updateRecipe()
+        }
+
+        3 -> {
+            logger.info("User chose to remove a recipe.")
+            removeRecipe()
+        }
+
+        4 -> {
+            logger.info("User chose to view recipes.")
+            viewRecipe()
+        }
+
+        5 -> {
+            logger.info("User chose to search for recipes.")
+            searchRecipe()
+        }
+
+        6 -> {
+            logger.info("User chose to exit.")
+            System.exit(0)
+        }
+
+        else -> {
+            logger.warning("Invalid choice entered.")
+            println("Invalid choice. Please enter a number between 1 and 6.")
+        }
     }
 }
-fun main() {
-    mainMenu()
-}
-fun addRecipe() {
-        println("[1] Add Recipe\n")
+
+    fun addRecipe() {
+        print("[1] Add Recipe\n")
 
         println(
             """
-            ────────────────────────────────────────────────────
-                      Please Enter the Name of the Recipe      
-            ────────────────────────────────────────────────────
-        """.trimIndent()
+        ────────────────────────────────────────────────────
+                  Please Enter the Name of the Recipe      
+        ────────────────────────────────────────────────────
+    """.trimIndent()
         )
         print("> ")
         var name = readLine()!!
 
         val existingRecipe = recipes.find { it.name.equals(name, ignoreCase = true) }
         if (existingRecipe != null) {
-            println(
+            logger.warning(
                 """
-                ────────────────────────────────────────────────────
-                             Recipe with the Same Name              
-                                  Already Exists                    
-                ────────────────────────────────────────────────────
-            """.trimIndent()
+            ────────────────────────────────────────────────────
+                         Recipe with the Same Name              
+                              Already Exists                    
+               ────────────────────────────────────────────────────
+        """.trimIndent()
             )
             existingRecipe.displayDetails()
-            println("\nPress any key to return to the main menu...")
+            logger.info("\nPress any key to return to the main menu...")
             readLine()
             return
         }
 
         println(
             """
-            ────────────────────────────────────────────────────
-                      Please Enter the Ingredients             
-            ────────────────────────────────────────────────────
-            (one ingredient per line, press Enter twice when finished)
-        """.trimIndent()
+        ────────────────────────────────────────────────────
+                  Please Enter the Ingredients             
+        ────────────────────────────────────────────────────
+        (one ingredient per line, press Enter twice when finished)
+    """.trimIndent()
         )
         val ingredients = mutableListOf<String>()
         var ingredient: String?
@@ -74,19 +109,19 @@ fun addRecipe() {
         }
 
         if (ingredients.isEmpty()) {
-            println("Error: Ingredients cannot be blank. Please try again.")
-            println("\nPress any key to return to the main menu...")
+            logger.warning("Error: Ingredients cannot be blank. Please try again.")
+            logger.info("\nPress any key to return to the main menu...")
             readLine()
             return
         }
 
         println(
             """
-            ────────────────────────────────────────────────────
-                      Please Enter the Instructions            
-            ────────────────────────────────────────────────────
-            (one instruction per line, press Enter twice when finished)
-        """.trimIndent()
+        ────────────────────────────────────────────────────
+                  Please Enter the Instructions            
+        ────────────────────────────────────────────────────
+        (one instruction per line, press Enter twice when finished)
+    """.trimIndent()
         )
         var instructions = ""
         var line: String?
@@ -97,45 +132,45 @@ fun addRecipe() {
         }
 
         if (instructions.isBlank()) {
-            println("Error: Instructions cannot be blank. Please try again.")
-            println("\nPress any key to return to the main menu...")
+            logger.warning("Error: Instructions cannot be blank. Please try again.")
+            logger.info("\nPress any key to return to the main menu...")
             readLine()
             return
         }
 
         println(
             """
-            ────────────────────────────────────────────────────
-                      Please Enter the Cooking Time            
-            ────────────────────────────────────────────────────
-        """.trimIndent()
+        ────────────────────────────────────────────────────
+                  Please Enter the Cooking Time            
+        ────────────────────────────────────────────────────
+    """.trimIndent()
         )
         var cookingTime = readLine()!!.toInt()
         while (cookingTime <= 0) {
-            println("Invalid input. Please enter a valid cooking time in minutes:")
+            logger.info("Invalid input. Please enter a valid cooking time in minutes:")
             cookingTime = readLine()!!.toInt()
         }
 
         println(
             """
-            ────────────────────────────────────────────────────
-                      Please Select a Category              
-            ────────────────────────────────────────────────────
-            [1] » Appetizers & Snacks
-            [2] » Main Dishes
-            [3] » Side Dishes
-            [4] » Desserts
-            [5] » Breakfast & Brunch
-            [6] » Beverages
-            [7] » Soups & Salads
-            ─────────────────────────────────────────────────────────────
-        """.trimIndent()
+        ────────────────────────────────────────────────────
+                  Please Select a Category              
+        ────────────────────────────────────────────────────
+        [1] » Appetizers & Snacks
+        [2] » Main Dishes
+        [3] » Side Dishes
+        [4] » Desserts
+        [5] » Breakfast & Brunch
+        [6] » Beverages
+        [7] » Soups & Salads
+        ─────────────────────────────────────────────────────────────
+    """.trimIndent()
         )
 
         var categoryInput = readLine()!!
         var category = ""
         while (!categoryInput.matches("[1-7]".toRegex())) {
-            println("Invalid choice. Please enter a number between 1 and 7.")
+            logger.info("Invalid choice. Please enter a number between 1 and 7.")
             categoryInput = readLine()!!
         }
 
@@ -153,32 +188,29 @@ fun addRecipe() {
 
         newRecipe.displayDetails()
 
-        println("\nWould you like to add this recipe? (Y/N): ")
+        logger.warning("\nWould you like to add this recipe? (Y/N): ")
         val confirmInput = readLine()!!
         if (confirmInput.equals("Y", ignoreCase = true)) {
             recipes.add(newRecipe)
-            println("\nRecipe added successfully!")
+            logger.info("\nRecipe added successfully!")
         } else {
-            println("\nRecipe not added.")
+            logger.info("\nRecipe not added.")
         }
 
-        println("\nPress any key to return to the main menu...")
+        logger.info("\nPress any key to return to the main menu...")
         readLine()
         mainMenu()
     }
-
 fun displayWelcomeInterface() {
     println(
         """
         Welcome to Cookbook Companion: Your Recipe Manager
-
         ----------------------------------------------------
                    Manage your recipes with ease!            
         ----------------------------------------------------
         """.trimIndent()
     )
 }
-
 abstract class FoodItem(
     var name: String,
     var ingredients: MutableList<String>,
@@ -188,7 +220,6 @@ abstract class FoodItem(
 ) {
     abstract fun displayDetails()
 }
-
 open class Recipe(
     name: String,
     ingredients: MutableList<String>,
@@ -221,23 +252,18 @@ open class Recipe(
         )
     }
 }
-
 fun updateRecipe() {
-    println("[2] Update Recipe\n")
-
+    print("[2] Update Recipe\n")
     if (recipes.isEmpty()) {
-        println("There are no recipes to update.")
-        println("\nPress any key to return to the main menu...")
+        logger.info("There are no recipes to update.")
+        logger.info("\nPress any key to return to the main menu...")
         readLine()
         mainMenu()
         return
     }
-
     println("Please enter the name of the recipe you want to update:")
     var recipeName = readLine()!!
-
     val recipeToUpdate = recipes.find { it.name.equals(recipeName, ignoreCase = true) }
-
     if (recipeToUpdate == null) {
         println(
             """
@@ -251,13 +277,11 @@ fun updateRecipe() {
                 ────────────────────────────────────────────────────
             """.trimIndent()
         )
-
         var option = readLine()!!
         while (!option.matches("[1-4]".toRegex())) {
-            println("Invalid choice. Please enter a number between 1 and 4.")
+            logger.info("Invalid choice. Please enter a number between 1 and 4.")
             option = readLine()!!
         }
-
         when (option) {
             "1" -> updateRecipe()
             "2" -> viewRecipe()
@@ -265,8 +289,7 @@ fun updateRecipe() {
             "4" -> mainMenu()
         }
     } else {
-        println("Recipe found. What would you like to update?\n")
-
+        logger.info("Recipe found. What would you like to update?\n")
         var updated = false
         while (!updated) {
             recipeToUpdate.displayDetails()
@@ -284,18 +307,15 @@ fun updateRecipe() {
         ────────────────────────────────────────────────────
     """.trimIndent()
             )
-
             print("> ")
             var option = readLine()!!
             when (option) {
                 "1" -> {
-                    println("Enter the new recipe name: ")
+                   println("Enter the new recipe name: ")
                     recipeName = readLine()!!
                     recipeToUpdate.name = recipeName
-                    println("\nName updated!")
+                    logger.info("\nName updated!")
                 }
-
-
                 "2" -> {
                     println("Enter the new list of ingredients (one ingredient per line, press Enter twice when finished):")
                     val newIngredients = mutableListOf<String>()
@@ -306,11 +326,10 @@ fun updateRecipe() {
                         newIngredients.add(ingredient)
                     }
                     recipeToUpdate.ingredients = newIngredients
-                    println("\nIngredients updated!")
+                    logger.info("\nIngredients updated!")
                 }
-
                 "3" -> {
-                    println("Enter the new cooking instructions (press Enter twice to confirm):")
+                   println("Enter the new cooking instructions (press Enter twice to confirm):")
                     var newInstructions = ""
                     var line: String?
                     while (true) {
@@ -319,65 +338,55 @@ fun updateRecipe() {
                         newInstructions += line + "\n"
                     }
                     recipeToUpdate.instructions = newInstructions
-                    println("\nCooking instructions updated!")
+                    logger.info("\nCooking instructions updated!")
                 }
-
                 "4" -> {
-                    println("Enter the new cooking time (in minutes): ")
+                   println("Enter the new cooking time (in minutes): ")
                     var newCookingTime = readLine()!!.toInt()
                     while (newCookingTime <= 0) {
                         println("Invalid input. Please enter a valid cooking time in minutes:")
                         newCookingTime = readLine()!!.toInt()
                     }
                     recipeToUpdate.cookingTime = newCookingTime
-                    println("\nCooking time updated!")
+                    logger.info("\nCooking time updated!")
                 }
-
                 "5" -> {
                     println("\nDisplaying the updated recipe details:\n")
                     recipeToUpdate.displayDetails()
-                    println("\nWould you like to confirm the update? (Y/N): ")
+                    logger.warning("\nWould you like to confirm the update? (Y/N): ")
                     val confirmUpdate = readLine()!!
                     if (confirmUpdate.equals("Y", ignoreCase = true)) {
-                        println("\nUpdate confirmed!")
+                        logger.info("\nUpdate confirmed!")
                         updated = true
                     } else {
-                        println("\nUpdate cancelled.")
+                        logger.info("\nUpdate cancelled.")
                     }
                 }
-
                 "6" -> {
-                    println("\nUpdate cancelled.")
+                    logger.info("\nUpdate cancelled.")
                     updated = true  // Exit the loop when the user chooses to cancel
                 }
-
-                else -> println("Invalid option.")
+                else -> logger.info("Invalid option.")
             }
         }
     }
 }
-
 fun removeRecipe() {
-    println("[3] Remove Recipe\n")
-
+    print("[3] Remove Recipe\n")
     if (recipes.isEmpty()) {
         println("There are no recipes to remove.")
-        println("\nPress any key to return to the main menu...")
+        logger.info("\nPress any key to return to the main menu...")
         readLine()
         mainMenu()
         return
     }
-
     var validOption = false
-
     while (!validOption) {
         println("Please enter the name of the recipe you want to remove:")
         val recipeName = readLine()!!
-
         val recipeToRemove = recipes.find { it.name.equals(recipeName, ignoreCase = true) }
-
         if (recipeToRemove == null) {
-            println(
+           println(
                 """
                 ────────────────────────────────────────────────────
                           Recipe Not Found                   
@@ -389,116 +398,43 @@ fun removeRecipe() {
                 ────────────────────────────────────────────────────
                 """.trimIndent()
             )
-
             print("Enter your choice: ")
             var option = readLine()!!
-
             var validOption1 = false
-
             while (!validOption1) {
-                println("\nInvalid choice. Please enter a valid option (1-4): ")
+                logger.warning("\nInvalid choice. Please enter a valid option (1-4): ")
                 option = readLine()!!
-
                 when (option) {
                     "1" -> removeRecipe()
                     "2" -> viewRecipe()
                     "3" -> searchRecipe()
                     "4" -> mainMenu()
-                    else -> println("Invalid choice. Please enter a valid option (1-4).")
+                    else -> logger.warning("Invalid choice. Please enter a valid option (1-4).")
                 }
             }
         } else {
             println("\nRecipe found:\n")
             recipeToRemove.displayDetails()
-
-            print("\nAre you sure you want to remove '${recipeToRemove.name}'? (Y/N): ")
+            logger.warning("\nAre you sure you want to remove '${recipeToRemove.name}'? (Y/N): ")
             val confirmDelete = readLine()!!
-
             if (confirmDelete.equals("Y", ignoreCase = true)) {
                 recipes.remove(recipeToRemove)
                 println("\n[Success] The recipe '${recipeToRemove.name}' has been removed successfully!")
             } else {
-                println("\nRemoval cancelled.")
+                logger.info("\nRemoval cancelled.")
             }
-
             validOption = true
         }
     }
-
-    println("\nPress any key to return to the main menu...")
+    logger.info("\nPress any key to return to the main menu...")
     readLine()
     mainMenu()
 }
-
-class RecipeManager(
-    name: String,
-    ingredients: MutableList<String>,
-    instructions: String,
-    cookingTime: Int,
-    category: String
-) : Recipe(name, ingredients, instructions, cookingTime, category) {
-    private val recipes = mutableListOf<Recipe>()
-
-    // Function to view all recipes
-    fun viewRecipe() {
-        println("[4] View Recipes\n")
-
-        if (recipes.isEmpty()) {
-            println("There are no recipes to display.")
-            println("\nPress any key to return to the main menu...")
-            readLine()
-            mainMenu()
-            return
-        }
-
-        println("List of Recipes:\n")
-        recipes.forEachIndexed { index, recipe ->
-            println("${index + 1}. ${recipe.name}")
-        }
-
-        println("\nPress any key to return to the main menu...")
-        readLine()
-        mainMenu()
-    }
-
-    // Function to search for a recipe by name
-    fun searchRecipe() {
-        println("[5] Search Recipe\n")
-
-        if (recipes.isEmpty()) {
-            println("There are no recipes to search.")
-            println("\nPress any key to return to the main menu...")
-            readLine()
-            mainMenu()
-            return
-        }
-
-        println("Please enter the name of the recipe you want to search:")
-        val searchName = readLine()!!
-
-        val searchResults = recipes.filter { it.name.equals(searchName, ignoreCase = true) }
-
-        if (searchResults.isEmpty()) {
-            println("No recipes found with the name '$searchName'.")
-        } else {
-            println("\nSearch Results:\n")
-            searchResults.forEach { recipe ->
-                recipe.displayDetails()
-            }
-        }
-
-        println("\nPress any key to return to the main menu...")
-        readLine()
-        mainMenu()
-    }
-    }
-
-val recipes = mutableListOf<Recipe>()
 fun viewRecipe() {
-    println("[2] View Recipe\n")
+    print("[4] View Recipe\n")
     if (recipes.isEmpty()) {
         println("There are no recipes to view.")
-        println("\nPress any key to return to the main menu...")
+        logger.info("\nPress any key to return to the main menu...")
         readLine()
         mainMenu()
         return
@@ -532,8 +468,66 @@ fun viewRecipe() {
     }
 }
 
+class RecipeManager(
+    name: String,
+    ingredients: MutableList<String>,
+    instructions: String,
+    cookingTime: Int,
+    category: String
+) : Recipe(name, ingredients, instructions, cookingTime, category) {
+    private val recipes = mutableListOf<Recipe>()
+    private val logger = Logger.getLogger("RecipeLogger")
+
+    fun searchRecipe() {
+        print("[5] Search Recipe\n")
+
+        if (recipes.isEmpty()) {
+            println("There are no recipes to search.")
+            logger.info("\nPress any key to return to the main menu...")
+            readLine()
+            mainMenu()
+            return
+        }
+
+       println("Please enter the name of the recipe you want to search:")
+        val searchName = readLine()!!
+
+        val searchResults = recipes.filter { it.name.equals(searchName, ignoreCase = true) }
+
+        if (searchResults.isEmpty()) {
+            println("No recipes found with the name '$searchName'.")
+        } else {
+            println("\nSearch Results:\n")
+            searchResults.forEach { recipe ->
+                recipe.displayDetails()
+            }
+        }
+
+        logger.info("\nPress any key to return to the main menu...")
+        readLine()
+        mainMenu()
+    }
+
+    private fun mainMenu() {
+        // Implement main menu logic here
+    }
+}
+
+val recipes = mutableListOf<Recipe>()
+
+// Other functions...
+
+fun main() {
+    val logMessage = "Application started."
+    log(logMessage)
+    println(logMessage)
+    mainMenu()
+}
+
+
 
 private fun viewAllRecipes() {
+
     println("--- All Recipes ---\n")
     recipes.forEachIndexed { index, recipe ->
         println("[${index + 1}] ${recipe.name}")
@@ -544,12 +538,11 @@ private fun viewAllRecipes() {
     if (recipeIndex != null && recipeIndex >= 1 && recipeIndex <= recipes.size) {
         displayRecipe(recipes[recipeIndex - 1])
     } else {
-        println("Invalid input. Please enter a valid number.")
+        logger.warning("Invalid input. Please enter a valid number.")
         viewAllRecipes() // Recursive call is okay here to retry input
     }
 }
-
-private fun viewRecipesByCategory() {
+fun viewRecipesByCategory() {
     println("────────────────────────────────────────────────────")
     println("              Please Select a Category              ")
     println("────────────────────────────────────────────────────")
@@ -562,7 +555,6 @@ private fun viewRecipesByCategory() {
     println("[7] » Soups & Salads")
     println("────────────────────────────────────────────────────")
     print("> ")
-
     val choice = readLine()!!.toIntOrNull()
     if (choice != null && choice >= 1 && choice <= 7) {
         val selectedCategory = when (choice) {
@@ -575,21 +567,18 @@ private fun viewRecipesByCategory() {
             7 -> "Soups & Salads"
             else -> ""
         }
-
         val filteredRecipes = recipes.filter { it.category == selectedCategory }
-
         if (filteredRecipes.isNotEmpty()) {
             println("--- $selectedCategory Recipes ---\n")
             filteredRecipes.forEachIndexed { index, recipe ->
                 println("[${index + 1}] ${recipe.name}")
             }
-
             println("\nPlease enter the number of the recipe you want to view:")
             val recipeIndex = readLine()!!.toIntOrNull()
             if (recipeIndex != null && recipeIndex >= 1 && recipeIndex <= filteredRecipes.size) {
                 displayRecipe(filteredRecipes[recipeIndex - 1])
             } else {
-                println("Invalid input. Please enter a valid number.")
+                logger.warning("Invalid input. Please enter a valid number.")
             }
         } else {
             println("No recipes found in this category.")
@@ -597,23 +586,17 @@ private fun viewRecipesByCategory() {
     } else {
         println("Invalid choice. Please enter a number between 1 and 7.")
     }
-
-    println("\nPress any key to return to the main menu...")
+    logger.info("\nPress any key to return to the main menu...")
     readLine()
     mainMenu()
 }
-
 private fun displayRecipe(recipe: Recipe) {
-    println("--- ${recipe.name} ---\n")
+   println("--- ${recipe.name} ---\n")
     recipe.displayDetails()
-
-    println("\nPress any key to return to the main menu...")
+    logger.info("\nPress any key to return to the main menu...")
     readLine()
     mainMenu()
 }
-
-
-
 fun searchRecipe() {
     println("────────────────────────────────────────────────────")
     println("            Please Select an Option                ")
@@ -622,8 +605,7 @@ fun searchRecipe() {
     println("[2] » Search by Ingredients")
     println("[3] » Cancel")
     println("────────────────────────────────────────────────────")
-    print("\n> ")
-
+    println("\n> ")
     when (val option = readLine()!!) {
         "1" -> {
             println("\nPlease enter the recipe name:")
@@ -641,10 +623,10 @@ fun searchRecipe() {
                     displayRecipe(matchingRecipesByName[selectedRecipeIndex - 1])
                     return
                 } else {
-                    println("\nInvalid selection. Returning to main menu...")
+                    logger.info("\nInvalid selection. Returning to main menu...")
                 }
             } else {
-                println("\nNo recipes found with that name.")
+                logger.info("\nNo recipes found with that name.")
             }
         }
         "2" -> {
@@ -668,10 +650,10 @@ fun searchRecipe() {
                     displayRecipe(matchingRecipesByIngredients[selectedRecipeIndex - 1])
                     return
                 } else {
-                    println("\nInvalid selection. Returning to main menu...")
+                    logger.info("\nInvalid selection. Returning to main menu...")
                 }
             } else {
-                println("\nNo recipes found with those ingredients.")
+                logger.info("\nNo recipes found with those ingredients.")
             }
         }
         "3" -> {
@@ -679,15 +661,12 @@ fun searchRecipe() {
             return
         }
         else -> {
-            println("Invalid option.")
+            logger.warning("Invalid option.")
             searchRecipe()
             return
         }
     }
-
-    println("\nPress any key to return to the main menu...")
+    logger.info("\nPress any key to return to the main menu...")
     readLine()
     mainMenu()
 }
-
-
